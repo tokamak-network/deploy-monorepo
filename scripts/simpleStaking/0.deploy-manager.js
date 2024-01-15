@@ -2,17 +2,134 @@ const { ethers } = require("hardhat");
 
 // const Web3EthAbi = require('web3-eth-abi');
 
+const TON_ABI = require("./abis/TON.json");
+const WTON_ABI = require("./abis/WTON.json");
+const DAOVault_ABI = require("./abis/DAOVault.json");
+const DAOAgendaManager_ABI = require("./abis/DAOAgendaManager.json");
+const DAOCommittee_V1_ABI = require("./abis/DAOCommittee_V1.json");
+const DAOCommitteProxy_ABI = require("./abis/DAOCommitteProxy.json");
 const SeigManager_ABI = require("./abis/SeigManager.json");
 const SeigManagerProxy_ABI = require("./abis/SeigManagerProxy.json");
 const DepositManager_ABI = require("./abis/DepositManager.json");
 const DepositManagerProxy_ABI = require("./abis/DepositManagerProxy.json");
 const Candidate_ABI = require("./abis/Candidate.json");
-const CandidateProxy_ABI = require("./abis/CandidateProxy.json");
+const CandidateFactory_ABI = require("./abis/CandidateFactory.json");
+const CandidateFactoryProxy_ABI = require("./abis/CandidateFactoryProxy.json");
 const Layer2Registry_ABI = require("./abis/Layer2Registry.json");
 const Layer2RegistryProxy_ABI = require("./abis/Layer2RegistryProxy.json");
+const PowerTONUpgrade_ABI = require("./abis/PowerTONUpgrade.json");
+const PowerTONSwapperProxy_ABI = require("./abis/PowerTONSwapperProxy.json");
+const RefactorCoinageSnapshot_ABI = require("./abis/RefactorCoinageSnapshot.json");
+const CoinageFactory_ABI = require("./abis/CoinageFactory.json");
 
 async function DeployManager() {
     const [deployer] = await ethers.getSigners();
+
+    let tosAddress = "0x409c4D8cd5d2924b9bc5509230d16a61289c8153"
+    let uniswapRouterAddress = "0xE592427A0AEce92De3Edee1F18E0157C05861564"
+    let uniswapRouter2Address = "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45"
+
+    let notuseAddress = "0x0000000000000000000000000000000000000001"
+
+    const globalWithdrawalDelay  = ethers.BigNumber.from("93046")
+    const lastSeigBlock = ethers.BigNumber.from("18169346");
+    const seigManagerInfo = {
+        minimumAmount: ethers.BigNumber.from("1000000000000000000000000000000"),
+        powerTONSeigRate: ethers.BigNumber.from("100000000000000000000000000"),
+        relativeSeigRate: ethers.BigNumber.from("400000000000000000000000000"),
+        daoSeigRate: ethers.BigNumber.from("500000000000000000000000000"),
+        seigPerBlock: ethers.BigNumber.from("3920000000000000000000000000"),
+        adjustCommissionDelay:  ethers.BigNumber.from("93096"),
+    }
+    
+
+    //==== TON =================================
+    const TONDeploy = await ethers.ContractFactory(
+        TON_ABI.abi,
+        TON_ABI.bytecode,
+        deployer
+    )
+
+    const TON = await TONDeploy.deploy();
+    await TON.deployed();
+    console.log('deploying "TON" at' , TON.address)
+
+    //==== WTON =================================
+    const WTONDeploy = await ethers.ContractFactory(
+        WTON_ABI.abi,
+        WTON_ABI.bytecode,
+        deployer
+    )
+
+    const WTON = await WTONDeploy.deploy(TON.address);
+    await WTON.deployed();
+    console.log('deploying "WTON" at' , WTON.address)
+
+    //==== DAOVault =================================
+    const DAOVaultDeploy = await ethers.ContractFactory(
+        DAOVault_ABI.abi,
+        DAOVault_ABI.bytecode,
+        deployer
+    )
+
+    const DAOVault = await DAOVaultDeploy.deploy(
+        TON.address,
+        WTON.address
+    );
+    await DAOVault.deployed();
+    console.log('deploying "DAOVault" at' , DAOVault.address)
+
+    //==== DAOAgendaManager =================================
+    const DAOAgendaManagerDeploy = await ethers.ContractFactory(
+        DAOAgendaManager_ABI.abi,
+        DAOAgendaManager_ABI.bytecode,
+        deployer
+    )
+
+    const DAOAgendaManager = await DAOAgendaManagerDeploy.deploy();
+    await DAOAgendaManager.deployed();
+    console.log('deploying "DAOAgendaManager" at' , DAOAgendaManager.address)
+
+    //==== Candidate =================================
+
+    const CandidateDeploy = await ethers.ContractFactory(
+        Candidate_ABI.abi,
+        Candidate_ABI.bytecode,
+        deployer
+    )
+
+    const Candidate = await CandidateDeploy.deploy();
+    await Candidate.deployed();
+    console.log('deploying "Candidate" at' , Candidate.address)
+
+    //==== CandidateFactory =================================
+
+    const CandidateFactoryDeploy = await ethers.ContractFactory(
+        CandidateFactory_ABI.abi,
+        CandidateFactory_ABI.bytecode,
+        deployer
+    )
+
+    const CandidateFactory = await CandidateFactoryDeploy.deploy();
+    await CandidateFactory.deployed();
+    console.log('deploying "CandidateFactory" at' , CandidateFactory.address)
+
+    //==== CandidateFactoryProxy =================================
+
+    const CandidateFactoryProxyDeploy = await ethers.ContractFactory(
+        CandidateFactoryProxy_ABI.abi,
+        CandidateFactoryProxy_ABI.bytecode,
+        deployer
+    )
+
+    const CandidateFactoryProxy = await CandidateFactoryProxyDeploy.deploy();
+    await CandidateFactoryProxy.deployed();
+    console.log('deploying "CandidateFactoryProxy" at' , CandidateFactoryProxy.address)
+
+    await (await CandidateFactoryProxy.upgradeTo(CandidateFactory.address)).wait()
+    console.log('"CandidateFactoryProxy" upgradeTo CandidateFactory Done')
+
+    const candidateFactory = (await ethers.getContractAt(CandidateFactory_ABI.abi, CandidateFactoryProxy.address, deployer))
 
     //==== SeigManager =================================
 
@@ -40,10 +157,10 @@ async function DeployManager() {
     await SeigManagerProxy.deployed();
     console.log('deploying "SeigManagerProxy" at' , SeigManagerProxy.address)
 
-    
-    //==== upgradeTo =================================
     await (await SeigManagerProxy.upgradeTo(SeigManager.address)).wait()
     console.log('"SeigManagerProxy" upgradeTo SeigManager Done')
+
+    const seigManagerV2 = (await ethers.getContractAt(SeigManager_ABI.abi, SeigManagerProxy.address, deployer))
 
 
     //==== DepositManager =================================
@@ -74,6 +191,8 @@ async function DeployManager() {
     await (await DepositManagerProxy.upgradeTo(DepositManager.address)).wait()
     console.log('"DepositManagerProxy" upgradeTo DepositManager Done')
 
+    const depositManagerV2 = (await ethers.getContractAt(DepositManager_ABI.abi, DepositManagerProxy.address, deployer))
+
     //==== Layer2Registry =================================
 
     const Layer2RegistryDeploy = await ethers.ContractFactory(
@@ -98,57 +217,161 @@ async function DeployManager() {
     await Layer2RegistryProxy.deployed();
     console.log('deploying "Layer2RegistryProxy" at' , Layer2RegistryProxy.address)
 
-    
-    //==== upgradeTo =================================
     await (await Layer2RegistryProxy.upgradeTo(Layer2Registry.address)).wait()
     console.log('"Layer2RegistryProxy" upgradeTo Layer2Registry Done')
 
+    const layer2RegistryV2 = (await ethers.getContractAt(Layer2Registry_ABI.abi, Layer2RegistryProxy.address, deployer))
 
-    //==== Candidate =================================
-
-    const CandidateDeploy = await ethers.ContractFactory(
-        Candidate_ABI.abi,
-        Candidate_ABI.bytecode,
+    //==== RefactorCoinageSnapshot =================================
+    const RefactorCoinageSnapshotDeploy = await ethers.ContractFactory(
+        RefactorCoinageSnapshot_ABI.abi,
+        RefactorCoinageSnapshot_ABI.bytecode,
         deployer
     )
 
-    const Candidate = await CandidateDeploy.deploy();
-    await Candidate.deployed();
-    console.log('deploying "Candidate" at' , Candidate.address)
+    const RefactorCoinageSnapshot = await RefactorCoinageSnapshotDeploy.deploy();
+    await RefactorCoinageSnapshot.deployed();
+    console.log('deploying "RefactorCoinageSnapshot" at' , RefactorCoinageSnapshot.address)
 
-    //==== CandidateProxy =================================
 
-    const CandidateProxyDeploy = await ethers.ContractFactory(
-        CandidateProxy_ABI.abi,
-        CandidateProxy_ABI.bytecode,
+    //==== CoinageFactory =================================
+    const CoinageFactoryDeploy = await ethers.ContractFactory(
+        CoinageFactory_ABI.abi,
+        CoinageFactory_ABI.bytecode,
         deployer
     )
 
-    const CandidateProxy = await CandidateProxyDeploy.deploy();
-    await CandidateProxy.deployed();
-    console.log('deploying "CandidateProxy" at' , CandidateProxy.address)
+    const CoinageFactory = await CoinageFactoryDeploy.deploy();
+    await CoinageFactory.deployed();
+    console.log('deploying "CoinageFactory" at' , CoinageFactory.address)
+
+    await (await CoinageFactory.setAutoCoinageLogic(RefactorCoinageSnapshot.address)).wait()
+    console.log('"CoinageFactory" upgradeTo RefactorCoinageSnapshot Done')
 
 
-    await (await CandidateProxy.upgradeTo(Candidate.address)).wait()
-    console.log('"CandidateProxy" upgradeTo Candidate Done')
+    //==== PowerTON =================================
+    const PowerTONDeploy = await ethers.ContractFactory(
+        PowerTONUpgrade_ABI.abi,
+        PowerTONUpgrade_ABI.bytecode,
+        deployer
+    )
+
+    const PowerTON = await PowerTONDeploy.deploy();
+    await PowerTON.deployed();
+    console.log('deploying "PowerTON" at' , PowerTON.address)
+
+
+    //==== PowerTONProxy =================================
+    const PowerTONProxyDeploy = await ethers.ContractFactory(
+        PowerTONSwapperProxy_ABI.abi,
+        PowerTONSwapperProxy_ABI.bytecode,
+        deployer
+    )
+
+    const PowerTONProxy = await PowerTONProxyDeploy.deploy(
+        PowerTON.address,
+        WTON.address,
+        tosAddress,
+        notuseAddress,
+        notuseAddress,
+        Layer2RegistryProxy.address,
+        SeigManagerProxy.address
+    );
+    await PowerTONProxy.deployed();
+    console.log('deploying "PowerTONProxy" at' , PowerTONProxy.address)
+
+     //==== DAOCommittee =================================
+     const DAOCommittee_V1Deploy = await ethers.ContractFactory(
+        DAOCommittee_V1_ABI.abi,
+        DAOCommittee_V1_ABI.bytecode,
+        deployer
+    )
+
+    const DAOCommittee_V1 = await DAOCommittee_V1Deploy.deploy();
+    await DAOCommittee_V1.deployed();
+    console.log('deploying "DAOCommittee_V1" at' , DAOCommittee_V1.address)
+
+
+    //==== DAOCommitteeProxy =================================
+    const DAOCommitteeProxyDeploy = await ethers.ContractFactory(
+        DAOCommitteProxy_ABI.abi,
+        DAOCommitteProxy_ABI.bytecode,
+        deployer
+    )
+
+    const DAOCommitteeProxy = await DAOCommitteeProxyDeploy.deploy(
+        TON.address,
+        DAOCommittee_V1.address,
+        SeigManagerProxy.address,
+        Layer2RegistryProxy.address,
+        DAOAgendaManager.address,
+        CandidateFactoryProxy.address,
+        DAOVault.address
+    );
+    await DAOCommitteeProxy.deployed();
+    console.log('deploying "DAOCommitteeProxy" at' , DAOCommitteeProxy.address)
+
+    const daoCommittee = (await ethers.getContractAt(DAOCommittee_V1_ABI.abi, DAOCommitteeProxy.address, deployer))
+
+
+    //=== TON, WTON Set =================================
+    await WTON.setSeigManager(SeigManagerProxy.address);
+    await WTON.addMinter(SeigManagerProxy.address);
+    await TON.addMinter(WTON.address);
+
+
+    await (await layer2RegistryV2.connect(deployer).addMinter(
+        daoCommittee.address
+    )).wait()
+
+    await (await seigManagerV2.connect(deployer).addMinter(
+        layer2RegistryV2.address
+    )).wait()
+
 
     //====== candidateFactory setAddress ==================
-    await (await candidateFactory.connect(deploySigner).setAddress (
+    await (await candidateFactory.connect(deployer).setAddress (
         DepositManagerProxy.address,
-        v1Infos.daoCommitteeProxy,
+        DAOCommitteeProxy.address,
         Candidate.address,
-        v1Infos.ton,
-        v1Infos.wton
-     )).wait()
+        TON.address,
+        WTON.address
+    )).wait()
+    console.log('candidateFactory setAddress ')
 
     //====== depositManagerV2 initialize ==================
-    await (await depositManagerForMigration.connect(deploySigner).initialize(
-        v1Infos.wton,
-        layer2RegistryProxy.address,
-        seigManagerProxy.address,
-        v1Infos.globalWithdrawalDelay,
-        DepositManager
+    await (await depositManagerV2.connect(deployer).initialize(
+        WTON.address,
+        Layer2RegistryProxy.address,
+        SeigManagerProxy.address,
+        globalWithdrawalDelay,
+        DepositManager.address
     )).wait()
+    console.log('depositManagerV2 initialized ')
+    //마지막은 oldDepositManager 주소 값 (안쓰임-물어보기)
+
+    //====== SeigManagerV2 Setting ==================
+    await (await seigManagerV2.connect(deployer).initialize (
+        TON.address,
+        WTON.address,
+        Layer2RegistryProxy.address,
+        depositManagerV2.address,
+        seigManagerInfo.seigPerBlock,
+        CoinageFactory.address,
+        lastSeigBlock
+    )).wait()
+    console.log('seigManagerV2 initialized ')
+    
+    await (await seigManagerV2.connect(deployer).setData (
+        PowerTONProxy.address,
+        DAOVault.address,
+        seigManagerInfo.powerTONSeigRate,
+        seigManagerInfo.daoSeigRate,
+        seigManagerInfo.relativeSeigRate,
+        seigManagerInfo.adjustCommissionDelay,
+        seigManagerInfo.minimumAmount
+    )).wait()
+    console.log('seigManagerV2 setData ')
 }
 
 async function DeployDepositManager() {
