@@ -24,7 +24,6 @@ const CoinageFactory_ABI = require("../../abis/CoinageFactory.json");
 
 async function DeployManager() {
     const [deployer] = await ethers.getSigners();
-    console.log("1")
 
     let tosAddress = "0x409c4D8cd5d2924b9bc5509230d16a61289c8153"
     let uniswapRouterAddress = "0xE592427A0AEce92De3Edee1F18E0157C05861564"
