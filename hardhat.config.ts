@@ -1,8 +1,12 @@
-require("@nomicfoundation/hardhat-toolbox");
-require('dotenv').config()
+import { HardhatUserConfig } from "hardhat/config";
+import "@nomicfoundation/hardhat-toolbox";
 
-/** @type import('hardhat/config').HardhatUserConfig */
-module.exports = {
+import dotenv from "dotenv" ;
+// import "hardhat-deploy";
+
+dotenv.config();
+
+const config: HardhatUserConfig = {
   networks: {
     hardhat: {
       forking: {
@@ -30,7 +34,7 @@ module.exports = {
       url: `${process.env.ETH_NODE_URI_goerli}`,
       accounts: [`${process.env.PRIVATE_KEY}`],
       chainId: 5,
-      deploy: ['deploy-seig-manager-v1']
+      // deploy: ['deploy-seig-manager-v1']
     },
     titan: {
       url: `${process.env.ETH_NODE_URI_TITAN}`,
@@ -54,3 +58,5 @@ module.exports = {
   },
   solidity: "0.8.17",
 };
+
+export default config;

@@ -1,8 +1,9 @@
 {
   "name": "hardhat-project",
   "devDependencies": {
+    "@nomicfoundation/edr-darwin-x64": "^0.2.1",
     "@nomicfoundation/hardhat-toolbox": "^2.0.2",
-    "dotenv": "^16.3.1",
-    "hardhat": "^2.19.3"
+    "dotenv": "^16.4.5",
+    "hardhat": "^2.21.0"
   }
 }
