@@ -2,5 +2,20 @@
     "TON":"",
     "WTON":"",
     "DAOVault":"",
-    "DAOAgendaManager":""
+    "DAOAgendaManager":"",
+    "Candidate":"",
+    "CandidateFactory":"",
+    "CandidateFactoryProxy":"",
+    "SeigManager":"",
+    "SeigManagerProxy":"",
+    "DepositManager":"",
+    "DepositManagerProxy":"",
+    "Layer2Registry":"",
+    "Layer2RegistryProxy":"",
+    "RefactorCoinageSnapshot":"",
+    "CoinageFactory":"",
+    "PowerTON":"",
+    "PowerTONProxy":"",
+    "DAOCommittee_V1":"",
+    "DAOCommitteeProxy":""
 }
