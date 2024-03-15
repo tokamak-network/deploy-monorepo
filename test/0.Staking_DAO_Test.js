@@ -70,7 +70,6 @@ describe('Staking & DAO Test', () => {
                 networkAddress.TON,
                 deployer
             )
-            console.log("TON: ",TONContract.address);
         })
 
         it("get WTON Contract", async () => {
@@ -79,7 +78,6 @@ describe('Staking & DAO Test', () => {
                 networkAddress.WTON,
                 deployer
             )
-            console.log("WTON: ",WTONContract.address);
         })
 
         it("get DAOVault Contract", async () => {
@@ -88,7 +86,6 @@ describe('Staking & DAO Test', () => {
                 networkAddress.DAOVault,
                 deployer
             )
-            console.log("DAOVault: ",DAOVaultContract.address);
         })
 
         it("get DAOAgendaManager Contract", async () => {
@@ -97,7 +94,6 @@ describe('Staking & DAO Test', () => {
                 networkAddress.DAOAgendaManager,
                 deployer
             )
-            console.log("DAOAgendaManager: ",DAOAgendaManagerContract.address);
         })
 
         it("get CandidateFactory Contract", async () => {
@@ -106,7 +102,6 @@ describe('Staking & DAO Test', () => {
                 networkAddress.CandidateFactoryProxy,
                 deployer
             )
-            console.log("CandidateFactory: ",CandidateFactoryContract.address);
         })
 
         it("get CandidateFactoryProxy Contract", async () => {
@@ -115,7 +110,6 @@ describe('Staking & DAO Test', () => {
                 networkAddress.CandidateFactoryProxy,
                 deployer
             )
-            console.log("CandidateFactoryProxy: ",CandidateFactoryProxyContract.address);
         })
 
         it("get SeigManager Contract", async () => {
@@ -124,7 +118,6 @@ describe('Staking & DAO Test', () => {
                 networkAddress.SeigManagerProxy,
                 deployer
             )
-            console.log("SeigManager: ", SeigManagerContract.address);
         })
 
         it("get SeigManagerProxy Contract", async () => {
@@ -133,7 +126,6 @@ describe('Staking & DAO Test', () => {
                 networkAddress.SeigManagerProxy,
                 deployer
             )
-            console.log("SeigManagerProxy: ", SeigManagerProxyContract.address);
         })
         
         it("get DepositManager Contract", async () => {
@@ -142,7 +134,6 @@ describe('Staking & DAO Test', () => {
                 networkAddress.DepositManagerProxy,
                 deployer
             )
-            console.log("DepositManager: ",DepositManagerContract.address);
         })
         
         it("get DepositManagerProxy Contract", async () => {
@@ -151,7 +142,6 @@ describe('Staking & DAO Test', () => {
                 networkAddress.DepositManagerProxy,
                 deployer
             )
-            console.log("DepositManagerProxy: ",DepositManagerProxyContract.address);
         })
 
         it("get Layer2Registry Contract", async () => {
@@ -160,7 +150,6 @@ describe('Staking & DAO Test', () => {
                 networkAddress.Layer2RegistryProxy,
                 deployer
             )
-            console.log("Layer2Registry: ", Layer2RegistryContract.address);
         })
 
         it("get Layer2RegistryProxy Contract", async () => {
@@ -169,7 +158,6 @@ describe('Staking & DAO Test', () => {
                 networkAddress.Layer2RegistryProxy,
                 deployer
             )
-            console.log("Layer2RegistryProxy: ",Layer2RegistryProxyContract.address);
         })
 
         it("get RefactorCoinageSnapshot Contract", async () => {
@@ -178,7 +166,6 @@ describe('Staking & DAO Test', () => {
                 networkAddress.RefactorCoinageSnapshot,
                 deployer
             )
-            console.log("RefactorCoinageSnapshot: ",RefactorCoinageSnapshotContract.address);
         })
 
         it("get CoinageFactory Contract", async () => {
@@ -187,7 +174,6 @@ describe('Staking & DAO Test', () => {
                 networkAddress.CoinageFactory,
                 deployer
             )
-            console.log("CoinageFactory: ",CoinageFactoryContract.address);
         })
 
         it("get PowerTON Contract", async () => {
@@ -196,7 +182,6 @@ describe('Staking & DAO Test', () => {
                 networkAddress.PowerTONProxy,
                 deployer
             )
-            console.log("PowerTONUpgrade_ABI: ",PowerTONContract.address);
         })
 
         it("get PowerTONProxy Contract", async () => {
@@ -205,7 +190,6 @@ describe('Staking & DAO Test', () => {
                 networkAddress.PowerTONProxy,
                 deployer
             )
-            console.log("PowerTONProxy: ",PowerTONProxyContract.address);
         })
 
         it("get DAOCommittee_V1 Contract", async () => {
@@ -214,7 +198,6 @@ describe('Staking & DAO Test', () => {
                 networkAddress.DAOCommitteeProxy,
                 deployer
             )
-            console.log("DAOCommittee_V1: ",DAOCommittee_V1Contract.address);
         })
 
         it("get DAOCommitteeProxy Contract", async () => {
@@ -223,13 +206,28 @@ describe('Staking & DAO Test', () => {
                 networkAddress.DAOCommitteeProxy,
                 deployer
             )
-            console.log("DAOCommitteeProxy: ", DAOCommitteeProxyContract.address);
         })
 
         it("address check", async () => {
-
+            console.log("TON: ",TONContract.address);
+            console.log("WTON: ",WTONContract.address);
+            console.log("DAOVault: ",DAOVaultContract.address);
+            console.log("DAOAgendaManager: ",DAOAgendaManagerContract.address);
+            console.log("CandidateFactory: ",CandidateFactoryContract.address);
+            console.log("CandidateFactoryProxy: ",CandidateFactoryProxyContract.address);
+            console.log("SeigManager: ", SeigManagerContract.address);
+            console.log("SeigManagerProxy: ", SeigManagerProxyContract.address);
+            console.log("DepositManager: ",DepositManagerContract.address);
+            console.log("DepositManagerProxy: ",DepositManagerProxyContract.address);
+            console.log("Layer2Registry: ", Layer2RegistryContract.address);
+            console.log("Layer2RegistryProxy: ",Layer2RegistryProxyContract.address);
+            console.log("RefactorCoinageSnapshot: ",RefactorCoinageSnapshotContract.address);
+            console.log("CoinageFactory: ",CoinageFactoryContract.address);
+            console.log("PowerTONUpgrade_ABI: ",PowerTONContract.address);
+            console.log("PowerTONProxy: ",PowerTONProxyContract.address);
+            console.log("DAOCommittee_V1: ",DAOCommittee_V1Contract.address);
+            console.log("DAOCommitteeProxy: ", DAOCommitteeProxyContract.address);
         })
-        
-        
+                
     })
 })
