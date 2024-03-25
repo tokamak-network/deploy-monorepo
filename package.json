@@ -3,6 +3,9 @@
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^2.0.2",
     "dotenv": "^16.3.1",
-    "hardhat": "^2.19.3"
+    "ethereum-waffle": "^4.0.10",
+    "hardhat": "^2.19.3",
+    "web3-eth-abi": "^4.2.0",
+    "web3-utils": "^4.2.1"
   }
 }
