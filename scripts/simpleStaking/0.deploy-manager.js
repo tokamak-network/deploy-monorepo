@@ -2,6 +2,7 @@ const { ethers } = require("hardhat");
 
 // const Web3EthAbi = require('web3-eth-abi');
 
+const TOS_ABI = require("../../abis/TOS.json");
 const TON_ABI = require("../../abis/TON.json");
 const WTON_ABI = require("../../abis/WTON.json");
 const DAOVault_ABI = require("../../abis/DAOVault.json");
@@ -22,14 +23,23 @@ const PowerTONSwapperProxy_ABI = require("../../abis/PowerTONSwapperProxy.json")
 const RefactorCoinageSnapshot_ABI = require("../../abis/RefactorCoinageSnapshot.json");
 const CoinageFactory_ABI = require("../../abis/CoinageFactory.json");
 
+const save = require('../../test/save_deployed');
+// const load = require('../../test/load_deployed');
+
 async function DeployManager() {
     const [deployer] = await ethers.getSigners();
+
+    let network = "local"
 
     let tosAddress = "0x409c4D8cd5d2924b9bc5509230d16a61289c8153"
     let uniswapRouterAddress = "0xE592427A0AEce92De3Edee1F18E0157C05861564"
     let uniswapRouter2Address = "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45"
 
     let notuseAddress = "0x0000000000000000000000000000000000000001"
+
+    const name = "Fair Launchpad Dao";
+    const symbol = "TOS";
+    const version = "1";    
 
     const globalWithdrawalDelay  = ethers.BigNumber.from("93046")
     const lastSeigBlock = ethers.BigNumber.from("18169346");
@@ -42,7 +52,6 @@ async function DeployManager() {
         adjustCommissionDelay:  ethers.BigNumber.from("93096"),
     }
     
-    console.log("2")
     console.log("deployer : ", deployer.address)
     //==== TON =================================
     const TONDeploy = new ethers.ContractFactory(
@@ -50,8 +59,14 @@ async function DeployManager() {
         TON_ABI.bytecode,
         deployer
     )
-    console.log("3")
+
     const TON = await TONDeploy.deploy();
+    save(
+        network, {
+            name: "TON",
+            address: TON.address
+        }
+    );
     await TON.deployed();
     console.log('deploying "TON" at' , TON.address)
 
@@ -63,8 +78,31 @@ async function DeployManager() {
     )
 
     const WTON = await WTONDeploy.deploy(TON.address);
+    save(
+        network, {
+            name: "WTON",
+            address: WTON.address
+        }
+    );
     await WTON.deployed();
     console.log('deploying "WTON" at' , WTON.address)
+
+    //==== TOS =================================
+    const TOSDeploy = new ethers.ContractFactory(
+        TOS_ABI.abi,
+        TOS_ABI.bytecode,
+        deployer
+    )
+
+    const TOS = await TOSDeploy.deploy(name, symbol, version);
+    save(
+        network, {
+            name: "TOS",
+            address: TOS.address
+        }
+    );
+    await TOS.deployed();
+    console.log('deploying "TOS" at' , TOS.address)
 
     //==== DAOVault =================================
     const DAOVaultDeploy = new ethers.ContractFactory(
@@ -77,6 +115,12 @@ async function DeployManager() {
         TON.address,
         WTON.address
     );
+    save(
+        network, {
+            name: "DAOVault",
+            address: DAOVault.address
+        }
+    );
     await DAOVault.deployed();
     console.log('deploying "DAOVault" at' , DAOVault.address)
 
@@ -88,6 +132,12 @@ async function DeployManager() {
     )
 
     const DAOAgendaManager = await DAOAgendaManagerDeploy.deploy();
+    save(
+        network, {
+            name: "DAOAgendaManager",
+            address: DAOAgendaManager.address
+        }
+    );
     await DAOAgendaManager.deployed();
     console.log('deploying "DAOAgendaManager" at' , DAOAgendaManager.address)
 
@@ -100,6 +150,12 @@ async function DeployManager() {
     )
 
     const Candidate = await CandidateDeploy.deploy();
+    save(
+        network, {
+            name: "Candidate",
+            address: Candidate.address
+        }
+    );
     await Candidate.deployed();
     console.log('deploying "Candidate" at' , Candidate.address)
 
@@ -112,6 +168,12 @@ async function DeployManager() {
     )
 
     const CandidateFactory = await CandidateFactoryDeploy.deploy();
+    save(
+        network, {
+            name: "CandidateFactory",
+            address: CandidateFactory.address
+        }
+    );
     await CandidateFactory.deployed();
     console.log('deploying "CandidateFactory" at' , CandidateFactory.address)
 
@@ -124,6 +186,12 @@ async function DeployManager() {
     )
 
     const CandidateFactoryProxy = await CandidateFactoryProxyDeploy.deploy();
+    save(
+        network, {
+            name: "CandidateFactoryProxy",
+            address: CandidateFactoryProxy.address
+        }
+    );
     await CandidateFactoryProxy.deployed();
     console.log('deploying "CandidateFactoryProxy" at' , CandidateFactoryProxy.address)
 
@@ -141,6 +209,12 @@ async function DeployManager() {
     )
 
     const SeigManager = await SeigManagerDeploy.deploy();
+    save(
+        network, {
+            name: "SeigManager",
+            address: SeigManager.address
+        }
+    );
     await SeigManager.deployed();
     console.log('deploying "SeigManager" at' , SeigManager.address)
 
@@ -155,6 +229,12 @@ async function DeployManager() {
     )
 
     const SeigManagerProxy = await SeigManagerProxyDeploy.deploy();
+    save(
+        network, {
+            name: "SeigManagerProxy",
+            address: SeigManagerProxy.address
+        }
+    );
     await SeigManagerProxy.deployed();
     console.log('deploying "SeigManagerProxy" at' , SeigManagerProxy.address)
 
@@ -173,6 +253,12 @@ async function DeployManager() {
     )
 
     const DepositManager = await DepositManagerDeploy.deploy();
+    save(
+        network, {
+            name: "DepositManager",
+            address: DepositManager.address
+        }
+    );
     await DepositManager.deployed();
     console.log('deploying "DepositManager" at' , DepositManager.address)
 
@@ -185,6 +271,12 @@ async function DeployManager() {
     )
 
     const DepositManagerProxy = await DepositManagerProxyDeploy.deploy();
+    save(
+        network, {
+            name: "DepositManagerProxy",
+            address: DepositManagerProxy.address
+        }
+    );
     await DepositManagerProxy.deployed();
     console.log('deploying "DepositManagerProxy" at' , DepositManagerProxy.address)
 
@@ -203,6 +295,12 @@ async function DeployManager() {
     )
 
     const Layer2Registry = await Layer2RegistryDeploy.deploy();
+    save(
+        network, {
+            name: "Layer2Registry",
+            address: Layer2Registry.address
+        }
+    );
     await Layer2Registry.deployed();
     console.log('deploying "Layer2Registry" at' , Layer2Registry.address)
 
@@ -215,6 +313,12 @@ async function DeployManager() {
     )
 
     const Layer2RegistryProxy = await Layer2RegistryProxyDeploy.deploy();
+    save(
+        network, {
+            name: "Layer2RegistryProxy",
+            address: Layer2RegistryProxy.address
+        }
+    );
     await Layer2RegistryProxy.deployed();
     console.log('deploying "Layer2RegistryProxy" at' , Layer2RegistryProxy.address)
 
@@ -231,6 +335,12 @@ async function DeployManager() {
     )
 
     const RefactorCoinageSnapshot = await RefactorCoinageSnapshotDeploy.deploy();
+    save(
+        network, {
+            name: "RefactorCoinageSnapshot",
+            address: RefactorCoinageSnapshot.address
+        }
+    );
     await RefactorCoinageSnapshot.deployed();
     console.log('deploying "RefactorCoinageSnapshot" at' , RefactorCoinageSnapshot.address)
 
@@ -243,6 +353,12 @@ async function DeployManager() {
     )
 
     const CoinageFactory = await CoinageFactoryDeploy.deploy();
+    save(
+        network, {
+            name: "CoinageFactory",
+            address: CoinageFactory.address
+        }
+    );
     await CoinageFactory.deployed();
     console.log('deploying "CoinageFactory" at' , CoinageFactory.address)
 
@@ -258,6 +374,12 @@ async function DeployManager() {
     )
 
     const PowerTON = await PowerTONDeploy.deploy();
+    save(
+        network, {
+            name: "PowerTON",
+            address: PowerTON.address
+        }
+    );
     await PowerTON.deployed();
     console.log('deploying "PowerTON" at' , PowerTON.address)
 
@@ -272,11 +394,17 @@ async function DeployManager() {
     const PowerTONProxy = await PowerTONProxyDeploy.deploy(
         PowerTON.address,
         WTON.address,
-        tosAddress,
+        TOS.address,
         notuseAddress,
         notuseAddress,
         Layer2RegistryProxy.address,
         SeigManagerProxy.address
+    );
+    save(
+        network, {
+            name: "PowerTONProxy",
+            address: PowerTONProxy.address
+        }
     );
     await PowerTONProxy.deployed();
     console.log('deploying "PowerTONProxy" at' , PowerTONProxy.address)
@@ -289,6 +417,12 @@ async function DeployManager() {
     )
 
     const DAOCommittee_V1 = await DAOCommittee_V1Deploy.deploy();
+    save(
+        network, {
+            name: "DAOCommittee_V1",
+            address: DAOCommittee_V1.address
+        }
+    );
     await DAOCommittee_V1.deployed();
     console.log('deploying "DAOCommittee_V1" at' , DAOCommittee_V1.address)
 
@@ -308,6 +442,12 @@ async function DeployManager() {
         DAOAgendaManager.address,
         CandidateFactoryProxy.address,
         DAOVault.address
+    );
+    save(
+        network, {
+            name: "DAOCommitteeProxy",
+            address: DAOCommitteeProxy.address
+        }
     );
     await DAOCommitteeProxy.deployed();
     console.log('deploying "DAOCommitteeProxy" at' , DAOCommitteeProxy.address)
@@ -373,6 +513,13 @@ async function DeployManager() {
         seigManagerInfo.minimumAmount
     )).wait()
     console.log('seigManagerV2 setData ')
+
+
+    //====== DAOAgendaManger Setting ==================
+    await (
+        await DAOAgendaManager.transferOwnership(DAOCommitteeProxy.address)
+    ).wait()
+    console.log('agendaManager transferOwner to DAOCommitteeProxy')
 }
 
 async function DeployDepositManager() {
