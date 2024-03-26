@@ -35,6 +35,8 @@ let networkAddress = require('./data/deployed.'+network+'.json');
 
 const Web3EthAbi = require('web3-eth-abi');
 const { padLeft } = require('web3-utils');
+// const loadDeployed = require('./load_deployed');
+
 
 describe('Staking & DAO Test', () => {
     let accounts;
@@ -68,6 +70,8 @@ describe('Staking & DAO Test', () => {
 
     let testAddr = "f0B595d10a92A5a9BC3fFeA7e79f5d266b6035Ea";
     let sendether = "0xDE0B6B3A7640000"
+
+    let tonAddr;
     
     before('create signer', async () => {
         accounts = await ethers.getSigners();
@@ -75,7 +79,7 @@ describe('Staking & DAO Test', () => {
         console.log("deployerAddr :", deployer.address)
         console.log("user1Addr :", user1.address)
         console.log("user2Addr :", user2.address)
-        console.log(networkAddress)
+        // console.log(networkAddress)
 
         if (network == "mainnet") {
             console.log("1");
@@ -102,6 +106,9 @@ describe('Staking & DAO Test', () => {
             networkAddress.WTON,
             sendether
         ]);
+
+        // tonAddr = loadDeployed(network, "TON");
+        // console.log("tonAddr : ", tonAddr);
     })
 
     describe('get the Contract', () => {
