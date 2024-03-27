@@ -16,6 +16,7 @@ const DAOAgendaManager_ABI = require("../abis/DAOAgendaManager.json");
 const DAOCommittee_V1_ABI = require("../abis/DAOCommittee_V1.json");
 const DAOCommitteProxy_ABI = require("../abis/DAOCommitteeProxy.json");
 const SeigManager_ABI = require("../abis/SeigManager.json");
+const SeigManagerV1_2_ABI = require("../abis/SeigManagerV1_2.json");
 const SeigManagerProxy_ABI = require("../abis/SeigManagerProxy.json");
 const DepositManager_ABI = require("../abis/DepositManager.json");
 const DepositManagerProxy_ABI = require("../abis/DepositManagerProxy.json");
@@ -162,7 +163,7 @@ describe('Staking & DAO Test', () => {
 
         it("get SeigManager Contract", async () => {
             SeigManagerContract = await ethers.getContractAt(
-                SeigManager_ABI.abi,
+                SeigManagerV1_2_ABI.abi,
                 networkAddress.SeigManagerProxy,
                 deployer
             )
